@@ -5,9 +5,9 @@ services:
     container_name: Neo4j-test
     image: neo4j:4.0
     volumes:
-      - ./data:/data
-      - ./plugins:/plugins
-      - ./import:/import
+      - ./compose-data/neo4j/data:/data
+      - ./compose-data/neo4j/plugins:/plugins
+      - ./compose-data/neo4j/import:/import
     ports:
       - "7474:7474"
       - "7687:7687"

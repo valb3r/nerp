@@ -6,6 +6,10 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: example
+    ports:
+      - 3306:3306
+    volumes:
+      - ./compose-data/mariadb:/var/lib/mysql
 
   adminer:
     image: adminer
