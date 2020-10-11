@@ -31,11 +31,11 @@ public class Stock {
 
     @Required
     @NotNull
-    @Relationship(type = OF_PRODUCT)
+    @Relationship(type = OF_PRODUCT, direction = Relationship.UNDIRECTED)
     private Product product;
 
     @Required
     @NotNull
-    @Relationship(type = IN_WAREHOUSE)
+    @Relationship(type = IN_WAREHOUSE, direction = Relationship.INCOMING)
     private Warehouse warehouse;
 }

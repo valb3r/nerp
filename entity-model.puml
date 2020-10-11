@@ -1,0 +1,12 @@
+@startuml
+
+title Entity relationship model
+
+(Catalog)-->(Product)
+(Category A)-->(Category C)
+(Category B)-->(Category C)
+(Category C)-->(Product)
+(Product)<-->(Stock)
+(Warehouse)-->(Stock)
+
+@enduml

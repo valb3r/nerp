@@ -33,6 +33,6 @@ public class Category {
     @NotBlank
     private String name;
 
-    @Relationship(type = PARENT_CATEGORY)
-    private Set<Category> categories;
+    @Relationship(type = PARENT_CATEGORY, direction = Relationship.INCOMING)
+    private Set<Category> parents;
 }

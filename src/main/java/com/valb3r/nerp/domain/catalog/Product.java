@@ -42,6 +42,6 @@ public class Product {
 
     @Required
     @NotEmpty
-    @Relationship(type = HAS_CATEGORY)
+    @Relationship(type = HAS_CATEGORY, direction = Relationship.INCOMING)
     private Set<Category> categories;
 }
