@@ -9,7 +9,9 @@ import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.Required;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Getter
@@ -27,9 +29,9 @@ public class Category {
     @GeneratedValue
     private Long id;
 
+    @Required
+    @NotBlank
     private String name;
-
-    private String value;
 
     @Relationship(type = PARENT_CATEGORY)
     private Set<Category> categories;

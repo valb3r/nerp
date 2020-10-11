@@ -10,6 +10,9 @@ import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.Required;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -26,9 +29,13 @@ public class Stock {
     @GeneratedValue
     private Long id;
 
+    @Required
+    @NotNull
     @Relationship(type = OF_PRODUCT)
     private Product product;
 
+    @Required
+    @NotNull
     @Relationship(type = IN_WAREHOUSE)
     private Warehouse warehouse;
 }

@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Required;
+
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -20,4 +23,8 @@ public class Warehouse {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Required
+    @NotBlank
+    private String name;
 }
