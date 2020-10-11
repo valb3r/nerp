@@ -13,7 +13,7 @@ import org.neo4j.ogm.annotation.Required;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.util.Set;
+import java.util.List;
 
 import static com.valb3r.nerp.domain.catalog.Category.HAS_CATEGORY;
 
@@ -38,10 +38,8 @@ public class Product {
     @Required
     @NotEmpty
     @Relationship(type = IN_CATALOG, direction = Relationship.INCOMING)
-    private Set<Catalog> catalogs;
+    private List<Catalog> catalogs;
 
-    @Required
-    @NotEmpty
     @Relationship(type = HAS_CATEGORY, direction = Relationship.INCOMING)
-    private Set<Category> categories;
+    private List<Category> categories;
 }

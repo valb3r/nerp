@@ -12,7 +12,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Required;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,5 +34,5 @@ public class Category {
     private String name;
 
     @Relationship(type = PARENT_CATEGORY, direction = Relationship.INCOMING)
-    private Set<Category> parents;
+    private List<Category> parents;
 }
