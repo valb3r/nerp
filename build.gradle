@@ -21,6 +21,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
+	implementation 'org.springdoc:springdoc-openapi-data-rest:1.4.8'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
