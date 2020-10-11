@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,6 +21,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 public class Category {
 
     public static final String HAS_CATEGORY = "HAS";
+    public static final String PARENT_CATEGORY = "PARENT";
 
     @Id
     @GeneratedValue
@@ -26,4 +30,7 @@ public class Category {
     private String name;
 
     private String value;
+
+    @Relationship(type = PARENT_CATEGORY)
+    private Set<Category> categories;
 }
