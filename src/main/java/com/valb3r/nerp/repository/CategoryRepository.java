@@ -16,7 +16,7 @@ import java.util.List;
 public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> {
 
     @RestResource(exported = false)
-    @Query("MATCH path = (w:Warehouse)<-[:IN]-(s:Stock)-[:OF]->(p:Product)<-[:HAS]-(cs:Category) WHERE id(w) = $warehouseId " +
+    @Query("MATCH path = (w:Warehouse)<-[:IN]-(s:Stock)-[:OF]->(p:Product)<-[:HAS]-(cs:Category) WHERE id(w) = $warehouseId AND s.balance >= $atLeastStock " +
         "WITH DISTINCT cs " +
         "MATCH categories = (ce:Category)-[:PARENT*1..]->(cs:Category) " +
         "WITH DISTINCT categories\n" +
@@ -26,7 +26,7 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
         "| {st: startNode(rel), en: endNode(rel)}" +
         "] AS paths " +
         "UNWIND paths AS result RETURN result.st AS start, result.en AS end")
-    List<CategoryPath> findCategoryCatalogForWarehouse(@Param("warehouseId") long warehouseId);
+    List<CategoryPath> findCategoryCatalogForWarehouse(@Param("warehouseId") long warehouseId, @Param("atLeastStock") long atLeastStock);
 }
 
 
