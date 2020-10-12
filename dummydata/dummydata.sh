@@ -70,12 +70,12 @@ function_generate_clothes_with_stocks () {
     done
 }
 
-function_generate_clothes_with_stocks 10 ${MEN} ${T_SHIRT} "Men's T-Shirt"
-function_generate_clothes_with_stocks 10 ${WOMEN} ${T_SHIRT} "Women's T-Shirt"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${T_SHIRT} "Men's T-Shirt"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${T_SHIRT} "Women's T-Shirt"
 
-function_generate_clothes_with_stocks 10 ${MEN} ${JACKET} "Men's Jacket"
-function_generate_clothes_with_stocks 10 ${WOMEN} ${JACKET} "Women's Jacket"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${JACKET} "Men's Jacket"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${JACKET} "Women's Jacket"
 
-function_generate_clothes_with_stocks 10 ${MEN} ${SHIRT} "Men's Shirt"
-function_generate_clothes_with_stocks 10 ${WOMEN} ${DRESS} "Women's Dress"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${SHIRT} "Men's Shirt"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${DRESS} "Women's Dress"
 
