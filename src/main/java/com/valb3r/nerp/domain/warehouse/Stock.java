@@ -36,7 +36,7 @@ public class Stock {
 
     @Required
     @NotNull
-    @Relationship(type = IN_WAREHOUSE, direction = Relationship.INCOMING)
+    @Relationship(type = IN_WAREHOUSE)
     private Warehouse warehouse;
 
     private long balance;
