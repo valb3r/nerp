@@ -59,7 +59,12 @@ function_generate_clothes_with_stocks () {
         fi
 
         product_name="$name $size_name"
-        product=$(curl -s -X POST "http://localhost:8080/products" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"$product_name\",\"catalogs\":[$CATALOG],\"categories\":[$CLOTHES,$sub_category,$data_category,$size]}"  | jq "._links.self.href")
+
+        if [[ -n "$sub_category" ]]; then
+            product=$(curl -s -X POST "http://localhost:8080/products" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"$product_name\",\"catalogs\":[$CATALOG],\"categories\":[$sub_category,$data_category,$size]}"  | jq "._links.self.href")
+        else
+            product=$(curl -s -X POST "http://localhost:8080/products" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"$product_name\",\"catalogs\":[$CATALOG],\"categories\":[$data_category,$size]}"  | jq "._links.self.href")
+        fi
 
         dice_roll=$(( ( RANDOM % 10 )  + 1 )) # Slightly biased
         stock=0
@@ -76,6 +81,6 @@ function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${T_SHIR
 function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${JACKET} "Men's Jacket"
 function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${JACKET} "Women's Jacket"
 
-function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${SHIRT} "Men's Shirt"
-function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${DRESS} "Women's Dress"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} "" ${SHIRT} "Men's Shirt"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} "" ${DRESS} "Women's Dress"
 
