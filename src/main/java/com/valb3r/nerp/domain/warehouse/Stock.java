@@ -38,4 +38,6 @@ public class Stock {
     @NotNull
     @Relationship(type = IN_WAREHOUSE, direction = Relationship.INCOMING)
     private Warehouse warehouse;
+
+    private long balance;
 }
