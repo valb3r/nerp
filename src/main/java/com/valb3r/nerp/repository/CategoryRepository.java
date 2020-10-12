@@ -20,12 +20,11 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
         "WITH DISTINCT cs " +
         "MATCH categories = (ce:Category)-[:PARENT*1..]->(cs:Category) " +
         "WITH DISTINCT categories\n" +
-        "WITH " +
+        "RETURN " +
         "[" +
         "rel IN relationships(categories) " +
-        "| {st: startNode(rel), en: endNode(rel)}" +
-        "] AS paths " +
-        "UNWIND paths AS result RETURN result.st AS start, result.en AS end")
+        "| [startNode(rel), endNode(rel)]" +
+        "] AS path")
     List<CategoryPath> findCategoryCatalogForWarehouse(@Param("warehouseId") long warehouseId, @Param("atLeastStock") long atLeastStock);
 }
 
