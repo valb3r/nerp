@@ -35,6 +35,11 @@ public class Product {
     @NotBlank
     private String name;
 
+    // Neo4j does not support BigDecimal directly
+    private long priceInCents;
+
+    private String priceCurrency;
+
     @Required
     @NotEmpty
     @Relationship(type = IN_CATALOG, direction = Relationship.INCOMING)
