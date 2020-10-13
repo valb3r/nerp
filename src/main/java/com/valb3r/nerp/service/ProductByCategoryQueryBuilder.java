@@ -36,26 +36,29 @@ public class ProductByCategoryQueryBuilder {
 
         if (categories.isEmpty()) {
             statement = baseStatement.where(fromProductId).returning(product).limit(pageSize);
-        } else {
-            StatementBuilder.OrderableOngoingReadingAndWithWithoutWhere currentStmt = null;
-
-            for (int pos = 0; pos < categories.size(); ++pos) {
-                var category = categories.get(pos);
-                if (0 == pos) {
-                    currentStmt = baseStatement.where(
-                        fromProductId.and(categoryEndId.isEqualTo(Cypher.literalOf(category)))  // Safe from injection as is long
-                    ).with(product);
-                } else  {
-                    categoryStart = node("Category").named("cs" + pos);
-                    categoryEnd = node("Category").named("ce" + pos);
-                    basePattern = product.relationshipFrom(categoryStart, "HAS").relationshipFrom(categoryEnd, "PARENT").min(0);
-                    currentStmt = currentStmt.match(basePattern).where(
-                        categoryEnd.internalId().isEqualTo(Cypher.literalOf(category)) // Safe from injection as is long
-                    ).with(product);
-                }
-            }
-            statement = currentStmt.returning(product).limit(pageSize);
+            return cypherRenderer.render(statement.build());
         }
+
+        StatementBuilder.OrderableOngoingReadingAndWithWithoutWhere currentStmt = null;
+
+        for (int pos = 0; pos < categories.size(); ++pos) {
+            var category = categories.get(pos);
+            if (0 == pos) {
+                currentStmt = baseStatement.where(
+                    fromProductId.and(categoryEndId.isEqualTo(Cypher.literalOf(category)))  // Safe from injection as is long
+                ).with(product);
+
+                continue;
+            }
+
+            categoryStart = node("Category").named("cs" + pos);
+            categoryEnd = node("Category").named("ce" + pos);
+            basePattern = product.relationshipFrom(categoryStart, "HAS").relationshipFrom(categoryEnd, "PARENT").min(0);
+            currentStmt = currentStmt.match(basePattern).where(
+                categoryEnd.internalId().isEqualTo(Cypher.literalOf(category)) // Safe from injection as is long
+            ).with(product);
+        }
+        statement = currentStmt.returning(product).limit(pageSize);
 
         return cypherRenderer.render(statement.build());
     }
