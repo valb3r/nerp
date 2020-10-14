@@ -14,22 +14,22 @@ CATALOG=$(curl -s -X POST "http://localhost:8080/catalogs" -H  "accept: applicat
 # Root category
 CLOTHES=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Clothes\"}" | jq "._links.self.href")
 # Sub-category
-MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Men\",\"parents\": [$CLOTHES]}" | jq "._links.self.href")
-WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Women\",\"parents\": [$CLOTHES]}" | jq "._links.self.href")
+MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Men\",\"parent\": $CLOTHES}" | jq "._links.self.href")
+WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Women\",\"parent\": $CLOTHES}" | jq "._links.self.href")
 # Category with data
-T_SHIRT_MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"T-shirt\",\"parents\": [$MEN]}" | jq "._links.self.href")
-JACKET_MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Jacket\",\"parents\": [$MEN]}" | jq "._links.self.href")
-T_SHIRT_WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"T-shirt\",\"parents\": [$WOMEN]}" | jq "._links.self.href")
-JACKET_WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Jacket\",\"parents\": [$WOMEN]}" | jq "._links.self.href")
-SHIRT=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Shirt\",\"parents\": [$MEN]}" | jq "._links.self.href")
-DRESS=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Dress\",\"parents\": [$WOMEN]}" | jq "._links.self.href")
+T_SHIRT_MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"T-shirt\",\"parent\": $MEN}" | jq "._links.self.href")
+JACKET_MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Jacket\",\"parent\": $MEN}" | jq "._links.self.href")
+T_SHIRT_WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"T-shirt\",\"parent\": $WOMEN}" | jq "._links.self.href")
+JACKET_WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Jacket\",\"parent\": $WOMEN}" | jq "._links.self.href")
+SHIRT=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Shirt\",\"parent\": $MEN}" | jq "._links.self.href")
+DRESS=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Dress\",\"parent\": $WOMEN}" | jq "._links.self.href")
 
 # Sizes (extra-category)
-SIZE_S=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Small\",\"parents\": [$CLOTHES],\"type\":\"MINOR\"}" | jq "._links.self.href")
-SIZE_M=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Medium\",\"parents\": [$CLOTHES],\"type\":\"MINOR\"}" | jq "._links.self.href")
-SIZE_L=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Large\",\"parents\": [$CLOTHES],\"type\":\"MINOR\"}" | jq "._links.self.href")
-SIZE_XL=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Extra large\",\"parents\": [$CLOTHES],\"type\":\"MINOR\"}" | jq "._links.self.href")
-SIZE_XXL=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Extra-Extra large\",\"parents\": [$CLOTHES],\"type\":\"MINOR\"}" | jq "._links.self.href")
+SIZE_S=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Small\",\"parent\": $CLOTHES,\"type\":\"MINOR\"}" | jq "._links.self.href")
+SIZE_M=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Medium\",\"parent\": $CLOTHES,\"type\":\"MINOR\"}" | jq "._links.self.href")
+SIZE_L=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Large\",\"parent\": $CLOTHES,\"type\":\"MINOR\"}" | jq "._links.self.href")
+SIZE_XL=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Extra large\",\"parent\": $CLOTHES,\"type\":\"MINOR\"}" | jq "._links.self.href")
+SIZE_XXL=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Extra-Extra large\",\"parent\": $CLOTHES,\"type\":\"MINOR\"}" | jq "._links.self.href")
 
 WAREHOUSE=$(curl -s -X POST "http://localhost:8080/warehouses" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"My own warehouse\"}" | jq "._links.self.href")
 

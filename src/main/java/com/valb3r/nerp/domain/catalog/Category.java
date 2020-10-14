@@ -13,7 +13,6 @@ import org.neo4j.ogm.annotation.Required;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @Setter
@@ -40,5 +39,5 @@ public class Category {
     private CategoryType type = CategoryType.MAJOR;
 
     @Relationship(type = PARENT_CATEGORY, direction = Relationship.INCOMING)
-    private List<Category> parents;
+    private Category parent;
 }
