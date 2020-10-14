@@ -17,8 +17,10 @@ CLOTHES=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: applic
 MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Men\",\"parents\": [$CLOTHES]}" | jq "._links.self.href")
 WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Women\",\"parents\": [$CLOTHES]}" | jq "._links.self.href")
 # Category with data
-T_SHIRT=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"T-shirt\",\"parents\": [$MEN,$WOMEN]}" | jq "._links.self.href")
-JACKET=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Jacket\",\"parents\": [$MEN,$WOMEN]}" | jq "._links.self.href")
+T_SHIRT_MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"T-shirt\",\"parents\": [$MEN]}" | jq "._links.self.href")
+JACKET_MEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Jacket\",\"parents\": [$MEN]}" | jq "._links.self.href")
+T_SHIRT_WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"T-shirt\",\"parents\": [$WOMEN]}" | jq "._links.self.href")
+JACKET_WOMEN=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Jacket\",\"parents\": [$WOMEN]}" | jq "._links.self.href")
 SHIRT=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Shirt\",\"parents\": [$MEN]}" | jq "._links.self.href")
 DRESS=$(curl -s -X POST "http://localhost:8080/categories" -H  "accept: application/hal+json" -H  "Content-Type: application/json" -d "{\"name\":\"Dress\",\"parents\": [$WOMEN]}" | jq "._links.self.href")
 
@@ -76,11 +78,11 @@ function_generate_clothes_with_stocks () {
     done
 }
 
-function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${T_SHIRT} "Men's T-Shirt"
-function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${T_SHIRT} "Women's T-Shirt"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${T_SHIRT_MEN} "Men's T-Shirt"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${T_SHIRT_WOMEN} "Women's T-Shirt"
 
-function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${JACKET} "Men's Jacket"
-function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${JACKET} "Women's Jacket"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${MEN} ${JACKET_MEN} "Men's Jacket"
+function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} ${WOMEN} ${JACKET_WOMEN} "Women's Jacket"
 
 function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} "" ${SHIRT} "Men's Shirt"
 function_generate_clothes_with_stocks ${PRODUCT_COUNT_PER_CAT} "" ${DRESS} "Women's Dress"
