@@ -44,6 +44,14 @@ public class ProductByCategoryQueryBuilder {
         var split = s.split("\\.");
         return Map.of("fromPrice", Long.valueOf(split[0]), "fromId", Long.valueOf(split[1]));
     };
+    static final Function<String, Map<String, ?>> DECODE_PRICE_PAGE_ID_DESC = s -> {
+        if (StringUtils.isEmpty(s)) {
+            return Map.of("fromPrice", Long.MAX_VALUE, "fromId", -1L);
+        }
+
+        var split = s.split("\\.");
+        return Map.of("fromPrice", Long.valueOf(split[0]), "fromId", Long.valueOf(split[1]));
+    };
 
     // Cursor paging
     /*
@@ -115,7 +123,7 @@ public class ProductByCategoryQueryBuilder {
     public enum OrderBy {
         NONE(BY_ID, ORDER_ID, p -> null == p ? null : p.getId().toString(), s -> Map.of("fromId", StringUtils.isEmpty(s) ? -1L : Long.parseLong(s))),
         PRICE_ASC(BY_PRICE_ASC, ORDER_PRICE_ASC, ENCODE_PRICE_PAGE_ID, DECODE_PRICE_PAGE_ID),
-        PRICE_DESC(BY_PRICE_DESC, ORDER_PRICE_DESC, ENCODE_PRICE_PAGE_ID, DECODE_PRICE_PAGE_ID);
+        PRICE_DESC(BY_PRICE_DESC, ORDER_PRICE_DESC, ENCODE_PRICE_PAGE_ID, DECODE_PRICE_PAGE_ID_DESC);
 
         private final Function<Node, Condition> pageSkipClause;
         private final Function<Node, SortItem[]> orderByClause;
