@@ -36,6 +36,7 @@ public class Category {
 
     @Required
     @NotNull
+    @Builder.Default
     private CategoryType type = CategoryType.MAJOR;
 
     @Relationship(type = PARENT_CATEGORY, direction = Relationship.INCOMING)
