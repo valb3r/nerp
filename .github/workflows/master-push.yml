@@ -42,8 +42,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.CI_CD_PRIVATE_KEY }}
           script: |
-            docker load -i nerp/nerp.img
             . ./nerp/nerp.latest
+            docker load -i nerp/nerp-${NERP_LATEST}.img
             . ./neo4j/neo4j-password.sh
             docker kill nerp-main
             docker run -d --name nerp-main -e SPRING_DATA_NEO4J_PASSWORD=$NEO4J_PASSWORD -p 9999:8080 nerp/nerp:${NERP_LATEST}
