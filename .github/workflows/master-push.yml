@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
+      - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
@@ -24,7 +24,7 @@ jobs:
 
       - name: Create latest image reference
         run: |
-          - echo "export NERP_LATEST=$(./gradlew printCommitSha | grep COMMIT: | cut -d':' -f2)" > nerp.latest
+          echo "export NERP_LATEST=$(./gradlew printCommitSha | grep COMMIT: | cut -d':' -f2)" > nerp.latest
 
       - name: Copy built docker image to remote
         uses: appleboy/scp-action@master
