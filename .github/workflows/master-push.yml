@@ -44,6 +44,7 @@ jobs:
           script: |
             . ./nerp/nerp.latest
             docker load -i nerp/nerp.img
+            . ./neo4j/neo4j-host-port.sh
             . ./neo4j/neo4j-password.sh
-            docker kill nerp-main
-            docker run -d --name nerp-main -e SPRING_DATA_NEO4J_PASSWORD=$NEO4J_PASSWORD -p 9999:8080 nerp/nerp:$NERP_LATEST
+            docker kill nerp-main && docker container rm nerp-main
+            docker run -d --name nerp-main -e SPRING_DATA_NEO4J_URI=bolt://$NEO4J_HOST_PORT -e SPRING_DATA_NEO4J_PASSWORD=$NEO4J_PASSWORD -p 9999:8080 nerp/nerp:$NERP_LATEST
