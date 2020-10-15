@@ -1,7 +1,21 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+buildscript {
+	ext {
+		dockerBuildDir = 'build/docker/'
+	}
+}
+
 plugins {
+	id 'com.bmuschko.docker-remote-api' version '6.6.1'
 	id 'org.springframework.boot' version '2.3.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+}
+
+ext.commitSha = {->
+	'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
 
 group = 'com.valb3r'
@@ -35,6 +49,39 @@ dependencies {
 	}
 }
 
+bootJar {
+	enabled = true
+	mainClassName = 'com.valb3r.nerp.NerpApplication'
+}
+
+jar {
+	version = project.version
+	enabled = true
+}
+
 test {
 	useJUnitPlatform()
+}
+
+task syncJar(type: Copy) {
+	dependsOn bootJar
+	from "${buildDir}/${libsDirName}"
+	into dockerBuildDir
+}
+
+task createDockerfile(type: Dockerfile) {
+	def cmd = "/app/worker-${commitSha()}.jar";
+	from 'openjdk:8-jre-alpine'
+	label(['maintainer': 'Valentyn Berezin'])
+	copyFile(jar.archiveFileName.get(), cmd)
+	entryPoint('java')
+	defaultCommand('-jar', cmd)
+	exposePort(8080)
+}
+
+
+task buildImage(type: DockerBuildImage) {
+	dependsOn createDockerfile, syncJar
+	inputDir.set(project.file(dockerBuildDir))
+	images.add("ua-timetracker/worker:${commitSha()}")
 }
