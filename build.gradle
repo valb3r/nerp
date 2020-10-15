@@ -70,7 +70,7 @@ task syncJar(type: Copy) {
 }
 
 task createDockerfile(type: Dockerfile) {
-	def cmd = "/app/worker-${commitSha()}.jar";
+	def cmd = "/app/nerp-${commitSha()}.jar";
 	from 'openjdk:8-jre-alpine'
 	label(['maintainer': 'Valentyn Berezin'])
 	copyFile(jar.archiveFileName.get(), cmd)
@@ -83,5 +83,5 @@ task createDockerfile(type: Dockerfile) {
 task buildImage(type: DockerBuildImage) {
 	dependsOn createDockerfile, syncJar
 	inputDir.set(project.file(dockerBuildDir))
-	images.add("ua-timetracker/worker:${commitSha()}")
+	images.add("nerp/nerp:${commitSha()}")
 }
