@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.CI_CD_PRIVATE_KEY }}
           source: "nerp.img,nerp.latest"
-          target: "nerp/nerp.img,nerp/nerp.latest"
+          target: "nerp"
 
       - name: Deploy new docker image
         uses: appleboy/ssh-action@master
