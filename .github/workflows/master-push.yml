@@ -32,7 +32,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.CI_CD_PRIVATE_KEY }}
-          source: "nerp.img,nerp.latest"
+          source: "nerp*.img,nerp.latest"
           target: "nerp"
 
       - name: Deploy new docker image
