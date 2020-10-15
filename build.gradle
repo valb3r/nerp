@@ -63,6 +63,10 @@ test {
 	useJUnitPlatform()
 }
 
+task printCommitSha() {
+	println "COMMIT:${commitSha()}"
+}
+
 task syncJar(type: Copy) {
 	dependsOn bootJar
 	from "${buildDir}/${libsDirName}"

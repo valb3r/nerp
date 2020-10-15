@@ -1,0 +1,49 @@
+# Builds pushes and merges on develop branch
+name: Master branch build, test, deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build project and create docker image
+        run: ./gradlew clean buildImage
+
+      - name: Create docker image tar.gz blob
+        run: docker save -o nerp-$GITHUB_SHA.img nerp/nerp
+
+      - name: Create latest image reference
+        run: |
+          - echo "export NERP_LATEST=$(./gradlew printCommitSha | grep COMMIT: | cut -d':' -f2)" > nerp.latest
+
+      - name: Copy built docker image to remote
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.CI_CD_PRIVATE_KEY }}
+          source: "nerp.img,nerp.latest"
+          target: "nerp/nerp.img,nerp/nerp.latest"
+
+      - name: Deploy new docker image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.CI_CD_PRIVATE_KEY }}
+          script: |
+            docker load nerp/nerp.img
+            . ./nerp/nerp.latest
+            . ./neo4j/neo4j-password.sh
+            docker kill nerp-main
+            docker run -d --name nerp-main -e SPRING_DATA_NEO4J_PASSWORD=$NEO4J_PASSWORD -p 9999:8080 nerp/nerp:${NERP_LATEST}
