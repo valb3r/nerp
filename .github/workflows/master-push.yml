@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.CI_CD_PRIVATE_KEY }}
           script: |
-            docker load nerp/nerp.img
+            docker load -i nerp/nerp.img
             . ./nerp/nerp.latest
             . ./neo4j/neo4j-password.sh
             docker kill nerp-main
