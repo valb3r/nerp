@@ -3,6 +3,8 @@ package com.valb3r.nerp.service;
 import com.valb3r.nerp.domain.catalog.Product;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.neo4j.cypherdsl.core.Condition;
 import org.neo4j.cypherdsl.core.Cypher;
 import org.neo4j.cypherdsl.core.Node;
@@ -24,33 +26,36 @@ public class ProductByCategoryQueryBuilder {
 
     private static final Renderer cypherRenderer = Renderer.getDefaultRenderer();
 
-    static final Function<Node, Condition> BY_ID = n -> n.internalId().gt(Cypher.parameter("fromId"));
+    private static final String FROM_ID = "fromId";
+    private static final String PRICE_IN_CENTS = "priceInCents";
+    private static final String FROM_PRICE = "fromPrice";
+
+    static final Function<Node, Condition> BY_ID = n -> n.internalId().gt(Cypher.parameter(FROM_ID));
     static final Function<Node, SortItem[]> ORDER_ID = n -> new SortItem[] { sort(n.internalId()).ascending() };
+    static final Function<Node, Condition> BY_PRICE_ASC = n -> n.property(PRICE_IN_CENTS).gt(Cypher.parameter(FROM_PRICE))
+        .or(n.property(PRICE_IN_CENTS).isEqualTo(Cypher.parameter(FROM_PRICE)).and(n.internalId().gt(Cypher.parameter(FROM_ID))));
+    static final Function<Node, SortItem[]> ORDER_PRICE_ASC = n -> new SortItem[] {sort(n.property(PRICE_IN_CENTS)).ascending(), sort(n.internalId())};
 
-    static final Function<Node, Condition> BY_PRICE_ASC = n -> n.property("priceInCents").gt(Cypher.parameter("fromPrice"))
-        .or(n.property("priceInCents").isEqualTo(Cypher.parameter("fromPrice")).and(n.internalId().gt(Cypher.parameter("fromId"))));
-    static final Function<Node, SortItem[]> ORDER_PRICE_ASC = n -> new SortItem[] {sort(n.property("priceInCents")).ascending(), sort(n.internalId())};
+    static final Function<Node, Condition> BY_PRICE_DESC = n -> n.property(PRICE_IN_CENTS).lt(Cypher.parameter(FROM_PRICE))
+        .or(n.property(PRICE_IN_CENTS).isEqualTo(Cypher.parameter(FROM_PRICE)).and(n.internalId().gt(Cypher.parameter(FROM_ID))));
+    static final Function<Node, SortItem[]> ORDER_PRICE_DESC = n -> new SortItem[] {sort(n.property(PRICE_IN_CENTS)).descending(), sort(n.internalId())};
 
-    static final Function<Node, Condition> BY_PRICE_DESC = n -> n.property("priceInCents").lt(Cypher.parameter("fromPrice"))
-        .or(n.property("priceInCents").isEqualTo(Cypher.parameter("fromPrice")).and(n.internalId().gt(Cypher.parameter("fromId"))));
-    static final Function<Node, SortItem[]> ORDER_PRICE_DESC = n -> new SortItem[] {sort(n.property("priceInCents")).descending(), sort(n.internalId())};
-
-    static final Function<Product, String> ENCODE_PRICE_PAGE_ID = p -> null == p ? null : p.getPriceInCents() + "." + p.getId().toString();
-    static final Function<String, Map<String, ?>> DECODE_PRICE_PAGE_ID = s -> {
+    static final Function<@NotNull Product, String> ENCODE_PRICE_PAGE_ID = p -> p.getPriceInCents() + "." + p.getId().toString();
+    static final Function<@Nullable String, Map<String, ?>> DECODE_PRICE_PAGE_ID = s -> {
         if (StringUtils.isEmpty(s)) {
-            return Map.of("fromPrice", -1L, "fromId", -1L);
+            return Map.of(FROM_PRICE, -1L, FROM_ID, -1L);
         }
 
         var split = s.split("\\.");
-        return Map.of("fromPrice", Long.valueOf(split[0]), "fromId", Long.valueOf(split[1]));
+        return Map.of(FROM_PRICE, Long.valueOf(split[0]), FROM_ID, Long.valueOf(split[1]));
     };
     static final Function<String, Map<String, ?>> DECODE_PRICE_PAGE_ID_DESC = s -> {
         if (StringUtils.isEmpty(s)) {
-            return Map.of("fromPrice", Long.MAX_VALUE, "fromId", -1L);
+            return Map.of(FROM_PRICE, Long.MAX_VALUE, FROM_ID, -1L);
         }
 
         var split = s.split("\\.");
-        return Map.of("fromPrice", Long.valueOf(split[0]), "fromId", Long.valueOf(split[1]));
+        return Map.of(FROM_PRICE, Long.valueOf(split[0]), FROM_ID, Long.valueOf(split[1]));
     };
 
     // Cursor paging
@@ -69,7 +74,7 @@ public class ProductByCategoryQueryBuilder {
      * RETURN p ORDER BY p.priceCents, p.id LIMIT 10
      */
     // @Param("categories") Set<Long> categories, @Param("fromIdExclusive") long fromIdExclusive, @Param("pageSize") long pageSize
-    public String buildQuery(List<Long> categories, long pageSize, OrderBy orderBy) {
+    public String buildQuery(List<Long> categories, int pageSize, OrderBy orderBy) {
         var product = node("Product").named("p");
         var categoryStart = node("Category").named("cs");
         var categoryEnd = node("Category").named("ce");
@@ -121,13 +126,13 @@ public class ProductByCategoryQueryBuilder {
     @Getter
     @RequiredArgsConstructor
     public enum OrderBy {
-        NONE(BY_ID, ORDER_ID, p -> null == p ? null : p.getId().toString(), s -> Map.of("fromId", StringUtils.isEmpty(s) ? -1L : Long.parseLong(s))),
+        NONE(BY_ID, ORDER_ID, p -> p.getId().toString(), s -> Map.of(FROM_ID, StringUtils.isEmpty(s) ? -1L : Long.parseLong(s))),
         PRICE_ASC(BY_PRICE_ASC, ORDER_PRICE_ASC, ENCODE_PRICE_PAGE_ID, DECODE_PRICE_PAGE_ID),
         PRICE_DESC(BY_PRICE_DESC, ORDER_PRICE_DESC, ENCODE_PRICE_PAGE_ID, DECODE_PRICE_PAGE_ID_DESC);
 
         private final Function<Node, Condition> pageSkipClause;
         private final Function<Node, SortItem[]> orderByClause;
-        private final Function<Product, String> encodePageId;
-        private final Function<String, Map<String, ?>> decodePageId;
+        private final Function<@NotNull Product, String> encodePageId;
+        private final Function<@Nullable String, Map<String, ?>> decodePageId;
     }
 }
